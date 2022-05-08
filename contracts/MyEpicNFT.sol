@@ -17,6 +17,8 @@ contract MyEpicNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
+    uint256 public constant totalSupply = 10;
+
     string svgPartOne =
         "<svg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMinYMin meet' viewBox='0 0 350 350'><style>.base { fill: white; font-family: serif; font-size: 24px; }</style><rect width='100%' height='100%' fill='";
     string svgPartTwo =
@@ -108,10 +110,16 @@ contract MyEpicNFT is ERC721URIStorage {
 
     event NewEpicNFTMinted(address sender, uint256 tokenId);
 
+    function getTotalNFTsMintedSoFar() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
     // A function our user will hit to get their NFT.
     function makeAnEpicNFT() public {
         // Get the current tokenId, this starts at 0.
         uint256 newItemId = _tokenIds.current();
+
+        require(newItemId < totalSupply, "No more NFTs can be minted.");
 
         // We go and randomly grab one word from each of the three arrays.
         string memory first = pickRandomFirstWord(newItemId);
